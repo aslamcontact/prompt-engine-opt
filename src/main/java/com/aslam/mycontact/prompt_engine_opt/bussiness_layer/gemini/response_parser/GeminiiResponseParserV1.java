@@ -1,9 +1,10 @@
-package com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini;
+package com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.response_parser;
 
-import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.parser.Candidate;
-import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.parser.Content;
-import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.parser.GeminiPayLoad;
-import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.parser.Part;
+import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.response_parser.gemini_payload.Candidate;
+import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.response_parser.gemini_payload.Content;
+import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.response_parser.gemini_payload.GeminiPayLoad;
+import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.response_parser.gemini_payload.Part;
+import com.aslam.mycontact.prompt_engine_opt.exceptions.bussiness_layer.gemini.response_parser.GeminiParserException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
@@ -12,11 +13,11 @@ import java.util.Optional;
 
 
 @Component
-public class GeminiJsonParser implements JsonParserV1 {
+public class GeminiiResponseParserV1 implements GeminiResponseParser {
      private final ObjectMapper objectMapper;
 
 
-    public GeminiJsonParser() {
+    public GeminiiResponseParserV1() {
         this.objectMapper = new ObjectMapper();
 
 
@@ -60,7 +61,7 @@ public class GeminiJsonParser implements JsonParserV1 {
                  .readValue(responseBody, GeminiPayLoad.class);
      }catch (Exception e)
      {
-         throw new IllegalStateException("parser "+e.getMessage());
+         throw new GeminiParserException(e.getMessage(),responseBody);
      }
      return payLoad;
  }

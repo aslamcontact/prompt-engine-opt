@@ -1,4 +1,4 @@
-package com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.parser;
+package com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.response_parser.gemini_payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

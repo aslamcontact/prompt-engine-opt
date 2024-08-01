@@ -1,4 +1,4 @@
-package com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.parser;
+package com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.response_parser.gemini_payload;
 
 public class Part {
     private String text;

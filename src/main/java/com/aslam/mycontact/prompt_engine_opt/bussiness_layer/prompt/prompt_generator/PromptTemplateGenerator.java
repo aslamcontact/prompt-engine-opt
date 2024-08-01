@@ -1,8 +1,8 @@
 package com.aslam.mycontact.prompt_engine_opt.bussiness_layer.prompt.prompt_generator;
 
-import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.GeminiApiServiceV1;
-import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.JsonParserV1;
-import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.parser.GeminiPayLoad;
+import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.GeminiApiService;
+import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.response_parser.GeminiResponseParser;
+import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.gemini.response_parser.gemini_payload.GeminiPayLoad;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +11,9 @@ public abstract class PromptTemplateGenerator {
  abstract public String sent(String prompt);
 
  @Autowired
- private  GeminiApiServiceV1 gemini;
+ private GeminiApiService gemini;
  @Autowired
- private  JsonParserV1 parser;
+ private GeminiResponseParser parser;
 
     protected String callLlm(String prompt)
     {
