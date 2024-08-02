@@ -1,0 +1,50 @@
+version: '3.3'
+services:
+  mysql:
+    image: ubuntu/mysql:latest
+    restart: always
+    cap_add:
+      - SYS_NICE
+    environment:
+      MYSQL_DATABASE: 'prompt_engine_opt_db'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'test_user'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'test_pass'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'test_root_password'
+    networks:
+      app_net:
+        ipv4_address: 10.11.0.3
+
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+      # Where our data will be persisted
+  mysql-workbench:
+    image: lscr.io/linuxserver/mysql-workbench:latest
+    container_name: mysql-workbench
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - /work_bench/config:/config
+    ports:
+      - 3000:3000
+      - 3001:3001
+    cap_add:
+      - IPC_LOCK
+    restart: unless-stopped
+    networks:
+      app_net:
+        ipv4_address: 10.11.0.4
+
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.11.0.0/24
+          gateway: 10.11.0.1
