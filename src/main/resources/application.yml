@@ -1,6 +1,16 @@
 spring:
   application:
   name: prompt-engine-opt
+  datasource:
+    username: ${mysql_user}
+    password: ${mysql_password}
+    url: jdbc:mysql://${mysql_ip}:3306/${db_name}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
 app:
   ai:
     url: https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent
