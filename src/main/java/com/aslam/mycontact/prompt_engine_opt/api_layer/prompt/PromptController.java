@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1/prompt")
+@RequestMapping("/api/v1/template")
 public class PromptController {
  private final PromptService promptService;
 
     public PromptController(PromptService promptService) {
         this.promptService = promptService;
     }
-    @PostMapping("/generate")
+    @PostMapping("/prompt")
     ResponseEntity<PromptTemplatePayload> generatePrompt(@RequestBody String prompt)
     {
         return new ResponseEntity<PromptTemplatePayload>(
