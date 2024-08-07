@@ -1,5 +1,6 @@
 package com.aslam.mycontact.prompt_engine_opt.bussiness_layer.application.app_task;
 
+import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.application.AppPayload;
 import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.application.AppService;
 import com.aslam.mycontact.prompt_engine_opt.dao_layer.application.App;
 import com.aslam.mycontact.prompt_engine_opt.dao_layer.application.app_task.AppTask;
@@ -9,10 +10,11 @@ import com.aslam.mycontact.prompt_engine_opt.exceptions.bussiness_layer.applicat
 import com.aslam.mycontact.prompt_engine_opt.exceptions.bussiness_layer.application.app_task.AppTaskNotExistException;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @Component
-public class AppTaskServiceV1 implements AppTaskService{
+public class AppTaskServiceV1 implements AppTaskService,AppTaskPayloadParser{
     private final AppService appService;
     private final AppTaskRepository appTaskRepository;
 
@@ -84,5 +86,23 @@ public class AppTaskServiceV1 implements AppTaskService{
         if(appTask.isEmpty())
             throw new AppTaskNotExistException(app.getAppName(),taskName);
         return appTask.get();
+    }
+
+    @Override
+    public AppTaskPayload parse(AppTask appTask) {
+        return new AppTaskPayload(appTask.getName(),
+                appTask.getAboutTask());
+    }
+
+    @Override
+    public Optional<List<AppTaskPayload>> parse(Optional<List<AppTask>> appTasks) {
+        List<AppTaskPayload> appPayloads=new ArrayList<AppTaskPayload>();
+        if(appTasks.isEmpty())
+            return Optional.empty();
+        appTasks.get()
+                .stream()
+                .forEach(a->appPayloads.add(parse(a)));
+        return Optional.of(appPayloads);
+
     }
 }

@@ -1,22 +1,24 @@
 package com.aslam.mycontact.prompt_engine_opt.bussiness_layer.application.app_prompt;
 
+import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.application.AppPayload;
+import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.application.AppPayloadParser;
 import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.application.AppService;
+import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.application.app_task.AppTaskPayload;
 import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.application.app_task.AppTaskService;
 import com.aslam.mycontact.prompt_engine_opt.dao_layer.application.App;
 import com.aslam.mycontact.prompt_engine_opt.dao_layer.application.app_task.AppTask;
 import com.aslam.mycontact.prompt_engine_opt.dao_layer.application.prompt.Prompt;
 import com.aslam.mycontact.prompt_engine_opt.dao_layer.application.prompt.PromptRepository;
-import com.aslam.mycontact.prompt_engine_opt.exceptions.bussiness_layer.application.AppNotExistException;
-import com.aslam.mycontact.prompt_engine_opt.exceptions.bussiness_layer.application.app_task.AppTaskNotExistException;
 import com.aslam.mycontact.prompt_engine_opt.exceptions.bussiness_layer.application.prompt.PromptExistException;
 import com.aslam.mycontact.prompt_engine_opt.exceptions.bussiness_layer.application.prompt.PromptNotExistException;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Component
-public class AppPromptServiceV1 implements AppPromptService {
+public class AppPromptServiceV1 implements AppPromptService, AppPromptPayLoadParser {
 private final AppService appService;
 private final AppTaskService appTaskService;
 private final PromptRepository promptRepository;
@@ -46,19 +48,19 @@ private final PromptRepository promptRepository;
     @Override
     public Prompt createPrompt(App app,
                                AppTask appTask,
-                               PromptPayload promptPayload) {
+                               AppPromptPayload appPromptPayload) {
         var checkedApp=getApp(app);
         var checkedAppTask=getTask(checkedApp,appTask);
-        var prompt=getPrompt(checkedAppTask,promptPayload.promptName());
+        var prompt=getPrompt(checkedAppTask, appPromptPayload.promptName());
         if(prompt.isPresent())
             throw new PromptExistException( checkedApp.getAppName(),
                                             checkedAppTask.getName(),
                                             prompt.get().getPromptName());
         var newPrompt=new Prompt(
-                promptPayload.promptName(),
-                promptPayload.template(),
-                promptPayload.examplePrompt(),
-                promptPayload.outputFormat(),
+                appPromptPayload.promptName(),
+                appPromptPayload.template(),
+                appPromptPayload.examplePrompt(),
+                appPromptPayload.outputFormat(),
                 checkedAppTask);
         return promptRepository.save(newPrompt);
 
@@ -77,21 +79,21 @@ private final PromptRepository promptRepository;
     @Override
     public Optional<Prompt> updatePrompt(App app,
                                          AppTask appTask,
-                                         PromptPayload promptPayload) {
+                                         AppPromptPayload appPromptPayload) {
         var checkedApp=getApp(app);
         var checkedAppTask=getTask(checkedApp,appTask);
 
-        var prompt=getPrompt(checkedAppTask,promptPayload.promptName());
+        var prompt=getPrompt(checkedAppTask, appPromptPayload.promptName());
         if(prompt.isEmpty())
             throw new PromptNotExistException(
                     checkedApp.getAppName(),
                     checkedAppTask.getName(),
-                    promptPayload.promptName());
+                    appPromptPayload.promptName());
         var newPrompt=prompt.get();
-        newPrompt.setPromptName(promptPayload.promptName());
-        newPrompt.setExamplePrompt(promptPayload.examplePrompt());
-        newPrompt.setTemplate(promptPayload.template());
-        newPrompt.setOutputFormat(promptPayload.outputFormat());
+        newPrompt.setPromptName(appPromptPayload.promptName());
+        newPrompt.setExamplePrompt(appPromptPayload.examplePrompt());
+        newPrompt.setTemplate(appPromptPayload.template());
+        newPrompt.setOutputFormat(appPromptPayload.outputFormat());
         return Optional.of(promptRepository.save(newPrompt));
     }
 
@@ -120,4 +122,26 @@ private final PromptRepository promptRepository;
         List<Prompt> prompts=promptRepository.findPromptsByAppTask(checkedAppTask);
         return Optional.of(prompts);
     }
+
+    @Override
+    public AppPromptPayload parse(Prompt prompt) {
+        return new AppPromptPayload(prompt.getPromptName(),
+                prompt.getTemplate(),
+                prompt.getExamplePrompt(),
+                prompt.getOutputFormat());
+    }
+
+    @Override
+    public Optional<List<AppPromptPayload>> parse(Optional<List<Prompt>> prompts) {
+        List<AppPromptPayload> appPayloads=new ArrayList<AppPromptPayload>();
+        if(prompts.isEmpty())
+            return Optional.empty();
+        prompts.get()
+                .stream()
+                .forEach(a->appPayloads.add(parse(a)));
+        return Optional.of(appPayloads);
+
+    }
+
+
 }
