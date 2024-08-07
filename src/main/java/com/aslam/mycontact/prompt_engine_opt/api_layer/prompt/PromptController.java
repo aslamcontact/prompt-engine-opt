@@ -1,6 +1,4 @@
 package com.aslam.mycontact.prompt_engine_opt.api_layer.prompt;
-
-import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.application.app_prompt.PromptPayload;
 import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.prompt.PromptService;
 import com.aslam.mycontact.prompt_engine_opt.bussiness_layer.prompt.prompt_generator.response_parsers.prompt_template.PromptTemplatePayload;
 import org.springframework.http.HttpStatus;
