@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Optional;
 @Service
 public interface AppPromptService {
-    Prompt createPrompt(App app, AppTask appTask, PromptPayload promptPayload);
+    Prompt createPrompt(App app, AppTask appTask, AppPromptPayload appPromptPayload);
     Optional<Prompt> readPrompt(App app, AppTask appTask, String promptName);
-    Optional<Prompt> updatePrompt(App app, AppTask appTask,PromptPayload promptPayload);
+    Optional<Prompt> updatePrompt(App app, AppTask appTask, AppPromptPayload appPromptPayload);
     void deletePrompt(App app, AppTask appTask,String promptName);
     Optional<List<Prompt>> readAllPrompt(App app, AppTask appTask);
 

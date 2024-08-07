@@ -7,10 +7,11 @@ import com.aslam.mycontact.prompt_engine_opt.exceptions.bussiness_layer.applicat
 import org.springframework.stereotype.Component;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @Component
-public class AppServiceV1 implements AppService{
+public class AppServiceV1 implements AppService,AppPayloadParser{
     private final AppRepository appRepository;
 
     public AppServiceV1(AppRepository appRepository) {
@@ -64,4 +65,22 @@ public class AppServiceV1 implements AppService{
             throw new AppNotExistException(appName);
         return app.get();
     }
+
+    @Override
+    public AppPayload parse(App app) {
+        return new AppPayload(app.getAppName(),app.getDescriptions());
+    }
+
+    @Override
+    public Optional<List<AppPayload>> parse(Optional<List<App>> apps) {
+        List<AppPayload> appPayloads=new ArrayList<AppPayload>();
+        if(apps.isEmpty())
+            return Optional.empty();
+        apps.get()
+                .stream()
+                .forEach(a->appPayloads.add(parse(a)));
+        return Optional.of(appPayloads);
+    }
+
+
 }

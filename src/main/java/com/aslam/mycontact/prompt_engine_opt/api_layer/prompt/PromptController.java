@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/template")
 public class PromptController {
- private final PromptService promptService;
+    private final PromptService promptService;
 
     public PromptController(PromptService promptService) {
         this.promptService = promptService;
