@@ -3,6 +3,8 @@ package com.aslam.mycontact.prompt_engine_opt.dao_layer.application.prompt;
 import com.aslam.mycontact.prompt_engine_opt.dao_layer.application.app_task.AppTask;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(uniqueConstraints =
                 {
@@ -26,6 +28,7 @@ public class Prompt {
    @JoinColumn( name="app_task",
                 referencedColumnName = "taskId")
    private AppTask appTask;
+   private List<String> templateParameters;
 
     public Prompt() {
     }
@@ -39,14 +42,29 @@ public class Prompt {
         this.examplePrompt = examplePrompt;
         this.appTask = appTask;
     }
+    public Prompt(String promptName,
+                  String template,
+                  List<String> templateParameters,
+                  String examplePrompt,
+                  AppTask appTask) {
+        this.promptName = promptName;
+        this.template = template;
+        this.templateParameters=templateParameters;
+        this.examplePrompt = examplePrompt;
+        this.appTask = appTask;
+    }
+
+
 
     public Prompt(String promptName,
                   String template,
+                  List<String> templateParameters,
                   String examplePrompt,
                   String outputFormat,
                   AppTask appTask) {
         this.promptName = promptName;
         this.template = template;
+        this.templateParameters=templateParameters;
         this.examplePrompt = examplePrompt;
         this.outputFormat = outputFormat;
         this.appTask = appTask;
@@ -98,5 +116,13 @@ public class Prompt {
 
     public void setAppTask(AppTask appTask) {
         this.appTask = appTask;
+    }
+
+    public List<String> getTemplateParameters() {
+        return templateParameters;
+    }
+
+    public void setTemplateParameters(List<String> templateParameters) {
+        this.templateParameters = templateParameters;
     }
 }

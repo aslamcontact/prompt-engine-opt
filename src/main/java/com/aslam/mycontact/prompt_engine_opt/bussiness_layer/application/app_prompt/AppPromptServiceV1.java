@@ -22,13 +22,16 @@ public class AppPromptServiceV1 implements AppPromptService, AppPromptPayLoadPar
 private final AppService appService;
 private final AppTaskService appTaskService;
 private final PromptRepository promptRepository;
+private final AppPromptParametersService appPromptParametersService;
 
     public AppPromptServiceV1(AppService appService,
                               AppTaskService appTaskService,
-                              PromptRepository promptRepository) {
+                              PromptRepository promptRepository,
+                              AppPromptParametersService appPromptParametersService) {
         this.appService = appService;
         this.appTaskService = appTaskService;
         this.promptRepository=promptRepository;
+        this.appPromptParametersService=appPromptParametersService;
     }
 
     private App getApp(App app)
@@ -59,6 +62,7 @@ private final PromptRepository promptRepository;
         var newPrompt=new Prompt(
                 appPromptPayload.promptName(),
                 appPromptPayload.template(),
+                appPromptParametersService.extractParameters(appPromptPayload.template()),
                 appPromptPayload.examplePrompt(),
                 appPromptPayload.outputFormat(),
                 checkedAppTask);
@@ -93,6 +97,7 @@ private final PromptRepository promptRepository;
         newPrompt.setPromptName(appPromptPayload.promptName());
         newPrompt.setExamplePrompt(appPromptPayload.examplePrompt());
         newPrompt.setTemplate(appPromptPayload.template());
+        newPrompt.setTemplateParameters(appPromptParametersService.extractParameters(appPromptPayload.template()));
         newPrompt.setOutputFormat(appPromptPayload.outputFormat());
         return Optional.of(promptRepository.save(newPrompt));
     }
