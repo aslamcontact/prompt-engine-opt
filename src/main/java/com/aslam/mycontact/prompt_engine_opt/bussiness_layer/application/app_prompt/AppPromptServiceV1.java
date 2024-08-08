@@ -9,6 +9,7 @@ import com.aslam.mycontact.prompt_engine_opt.dao_layer.application.App;
 import com.aslam.mycontact.prompt_engine_opt.dao_layer.application.app_task.AppTask;
 import com.aslam.mycontact.prompt_engine_opt.dao_layer.application.prompt.Prompt;
 import com.aslam.mycontact.prompt_engine_opt.dao_layer.application.prompt.PromptRepository;
+import com.aslam.mycontact.prompt_engine_opt.exceptions.bussiness_layer.application.AppNotExistException;
 import com.aslam.mycontact.prompt_engine_opt.exceptions.bussiness_layer.application.prompt.PromptExistException;
 import com.aslam.mycontact.prompt_engine_opt.exceptions.bussiness_layer.application.prompt.PromptNotExistException;
 import org.springframework.stereotype.Component;
@@ -127,6 +128,18 @@ private final AppPromptParametersService appPromptParametersService;
         List<Prompt> prompts=promptRepository.findPromptsByAppTask(checkedAppTask);
         return Optional.of(prompts);
     }
+
+    @Override
+    public Prompt getPromptOrThrow(App app, AppTask appTask, String promptName) {
+
+        var prompt=readPrompt(app,appTask,promptName);
+        if(prompt.isEmpty())
+            throw new PromptNotExistException(promptName,
+                    appTask.getName(),
+                    promptName);
+        return prompt.get();
+    }
+
 
     @Override
     public AppPromptPayload parse(Prompt prompt) {
