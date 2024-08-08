@@ -100,6 +100,20 @@ public class AppPromptController {
         appPromptService.deletePrompt(app,appTask,promptName);
         return new ResponseEntity<>(promptName,HttpStatus.OK);
     }
+    @GetMapping("/parameters/{promptName}")
+    ResponseEntity<Optional<List<String>>> getParameters(
+            @PathVariable(value = "appName") String appName,
+            @PathVariable(value = "taskName") String taskName,
+            @PathVariable(value = "promptName") String promptName)
+    {
+        Optional<List<String>> parameters;
+        var app=checkApp(appName);
+        var appTask=checkTask(app,taskName);
+        var appPrompt=appPromptService.getPromptOrThrow(app,appTask,promptName);
+        parameters=Optional.of(appPrompt.getTemplateParameters());
+        return new ResponseEntity<>(parameters,HttpStatus.OK);
+    }
+
 
 
 }

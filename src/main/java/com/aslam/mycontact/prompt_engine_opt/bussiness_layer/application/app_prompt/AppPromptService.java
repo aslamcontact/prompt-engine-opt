@@ -14,6 +14,6 @@ public interface AppPromptService {
     Optional<Prompt> updatePrompt(App app, AppTask appTask, AppPromptPayload appPromptPayload);
     void deletePrompt(App app, AppTask appTask,String promptName);
     Optional<List<Prompt>> readAllPrompt(App app, AppTask appTask);
-
+    Prompt getPromptOrThrow(App app,AppTask appTask,String promptName);
 
 }
